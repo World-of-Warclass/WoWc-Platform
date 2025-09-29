@@ -20,3 +20,47 @@ svg {
     width: 100%;
     height: auto;
 }
+
+/* Mejoras de contraste y legibilidad */
+.text-improved {
+    @apply text-gray-900;
+}
+
+.bg-improved {
+    @apply bg-white;
+}
+
+/* Botones mejorados */
+.btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-md;
+}
+
+.btn-secondary {
+    @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-md;
+}
+
+.btn-success {
+    @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-md;
+}
+
+.btn-warning {
+    @apply bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors shadow-md;
+}
+
+/* Cards mejoradas */
+.card-improved {
+    @apply bg-white shadow-lg rounded-lg border border-gray-200 p-6;
+}
+
+/* Texto mejorado para mejor legibilidad */
+.text-primary-improved {
+    @apply text-gray-900 font-medium;
+}
+
+.text-secondary-improved {
+    @apply text-gray-700;
+}
+
+.text-muted-improved {
+    @apply text-gray-600;
+}

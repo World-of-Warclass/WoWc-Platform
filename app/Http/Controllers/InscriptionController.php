@@ -11,34 +11,54 @@ class InscriptionController extends Controller
 {
     public function validation(Request $request)
     {
-        $request -> validate([
+        $request->validate([
             'code' => 'required|string',
-            'id_course' => 'required|integer',
-            'id_user' => 'required|integer',
-            'token' =>'required|string',
+        ], [
+            'code.required' => 'El código de invitación es obligatorio.',
         ]);
 
-        $invitation = Invitation::where('id_course', $request->id_course)
-            ->where('code', $request->code)
+        // Buscar la invitación por código
+        $invitation = Invitation::where('code', $request->code)
             ->where('used', false)
+            ->with('course')
             ->first();
 
-        if ($invitation) {
-                Inscription::create([
-                'id_user' => $request->id_user,
-                'id_course' => $request->id_course,
-            ]);
-
-            $invitation->used = true;
-            $invitation->save();
-
-            // ruta a retornar /main/{token}/player/
-            return redirect()->route('player.character', ['token' => $request->token]);
-
-
-        }else{
-            return redirect()->route('dashboard');
+        if (!$invitation) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['code' => 'El código de invitación no es válido o ya fue utilizado.']);
         }
 
+        $userId = auth()->id();
+        $courseId = $invitation->id_course;
+
+        // Verificar si el usuario ya está inscrito en este curso
+        $existingInscription = Inscription::where('id_user', $userId)
+            ->where('id_course', $courseId)
+            ->first();
+
+        if ($existingInscription) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Ya estás inscrito en este curso: ' . $invitation->course->name);
+        }
+
+        try {
+            // Crear la inscripción
+            Inscription::create([
+                'id_user' => $userId,
+                'id_course' => $courseId,
+            ]);
+
+            // Marcar la invitación como usada
+            $invitation->update(['used' => true]);
+
+            // Redirigir al dashboard con mensaje de éxito
+            return redirect()->route('dashboard')
+                ->with('success', 'Te has inscrito correctamente al curso: ' . $invitation->course->name);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Ocurrió un error al procesar la inscripción. Por favor, intenta nuevamente.']);
+        }
     }
 }

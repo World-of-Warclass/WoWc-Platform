@@ -1,84 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
+<x-app-layout>
+    <div class="bg-gray-900 w-full flex justify-center text-gray-100 flex-col gap-4 items-center p-4 min-h-screen">
+        <!-- Información del usuario (solo para debug, se puede remover) -->
+        @if(config('app.debug'))
+            <details class="bg-gray-800 p-2 rounded text-xs text-gray-400 w-4/5">
+                <summary>Debug Info (solo en desarrollo)</summary>
+                <pre class="mt-2 text-xs">{{ Auth::user() }}</pre>
+            </details>
+        @endif
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quizzes</title>
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- Styles -->
-    @livewireStyles
-</head>
-
-<body>
-    <pre>
-    {{ Auth::user() }}
-</pre>
-    <div class="bg-white w-full flex justify-center text-black flex-col gap-2 items-center p-2 h-screen">
-        <div class="flex w-4/5 flex-col border-2 max-h-[40rem] ">
-            <section class=" w-full flex p-2">
-                <div class="
-             p-2 w-full flex flex-col">
-                    <h1 class="text-4xl font-bold text-center text-yellow-500">QUIZ</h1>
-                    <hr class="border border-black">
+        <div class="flex w-full max-w-4xl flex-col bg-gray-800 border border-gray-600 rounded-lg shadow-lg overflow-hidden">
+            <!-- Header del Quiz -->
+            <section class="w-full flex p-6 bg-gray-700">
+                <div class="p-2 w-full flex flex-col">
+                    <h1 class="text-4xl font-bold text-center text-yellow-500 mb-4">QUIZ</h1>
+                    <hr class="border-gray-500">
                 </div>
             </section>
 
-            <section class=" w-full flex p-2 flex-col gap-2 items-center">
-                <section class="w-full space-y-2 p-2">
-
+            <!-- Contenido del Quiz -->
+            <section class="w-full flex p-6 flex-col gap-4 items-center">
+                <div class="w-full space-y-4">
                     <form method="POST" action="{{ route('check.quiz', ['token' => $token]) }}"
-                        class="flex flex-col gap-y-2 overflow-auto h-[30rem]">
+                        class="flex flex-col gap-y-6">
                         @csrf
-                        @foreach ($quizzes as $quiz)
-                            <div class="p-5">
-                                <div
-                                    class=" border-2 border-black border-b-0 flex flex-row justify-between bg-red-500 p-2">
-                                    <h3 class="text-2xl font-semibold text-neutral-100">Pregunta {{ $i++ }}
-                                    </h3>
-                                    <h2 class="text-2xl font-semibold text-neutral-100">2 pts</h2>
+                        
+                        <!-- Scrollable container para las preguntas -->
+                        <div class="overflow-auto max-h-[60vh] space-y-6 pr-2">
+                            @php $i = 1; @endphp
+                            @foreach ($quizzes as $quiz)
+                                <div class="bg-gray-700 rounded-lg overflow-hidden border border-gray-600 shadow-md">
+                                    <!-- Header de la pregunta -->
+                                    <div class="bg-red-600 flex flex-row justify-between items-center p-4">
+                                        <h3 class="text-xl font-semibold text-white">
+                                            Pregunta {{ $i++ }}
+                                        </h3>
+                                        <span class="bg-red-700 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                            2 pts
+                                        </span>
+                                    </div>
 
-                                </div>
-
-                                <div class="bg-white flex flex-col justify-betwee p-2  flex-grow border-2 border-black">
-                                    <h2 class="text-2xl py-4 px-2 font-semibold">
-                                        {{ $quiz->question }}
-                                    </h2>
-                                    @foreach ($quiz->answers as $answer)
-                                        <div class="flex flex-col justify-between p-2 gap-1">
-                                            <div class="flex flex-row gap-1 items-center">
-                                                <input type="radio" required
-                                                    name="answerselected[{{ $quiz->id }}]"
-                                                    value="{{ $answer }}">
-
-                                                <label
-                                                    for="{{ $answer }}{{ $quiz->id }}">{{ $answer }}</label>
-
-                                            </div>
-                                            <hr class="border-2 border-neutral-300 w-3/4">
+                                    <!-- Contenido de la pregunta -->
+                                    <div class="bg-gray-700 p-4">
+                                        <h2 class="text-lg font-semibold text-gray-100 mb-4 leading-relaxed">
+                                            {{ $quiz->question }}
+                                        </h2>
+                                        
+                                        <!-- Opciones de respuesta -->
+                                        <div class="space-y-3">
+                                            @foreach ($quiz->answers as $index => $answer)
+                                                <div class="flex items-center p-3 bg-gray-600 rounded-lg hover:bg-gray-500 transition-colors">
+                                                    <input type="radio" 
+                                                           required
+                                                           name="answerselected[{{ $quiz->id }}]"
+                                                           value="{{ $answer }}"
+                                                           id="answer_{{ $quiz->id }}_{{ $index }}"
+                                                           class="mr-3 h-4 w-4 text-yellow-500 border-gray-400 focus:ring-yellow-500 bg-gray-600">
+                                                    
+                                                    <label for="answer_{{ $quiz->id }}_{{ $index }}" 
+                                                           class="text-gray-100 cursor-pointer flex-grow">
+                                                        {{ $answer }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    @endforeach
-
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
 
-                </section>
-
-                <input type="hidden" name="token" value=""{{ $token }}>
-                <button class="btn btn-warning w-2/4" type="submit">
-                    <p class="text-xl text-white font-bold">Entregar</p>
-                </button>
-                </form>
+                        <!-- Token y botón de envío -->
+                        <input type="hidden" name="token" value="{{ $token }}">
+                        <div class="flex justify-center mt-6">
+                            <button class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-8 rounded-lg transition-colors duration-200 transform hover:scale-105 shadow-lg" 
+                                    type="submit">
+                                <span class="text-lg">Entregar Quiz</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
         </div>
 
-        </section>
-
-
+        <!-- Botón de regreso (opcional) -->
+        <div class="mt-4">
+            <button onclick="window.history.back()" 
+                    class="bg-gray-600 hover:bg-gray-500 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors">
+                ← Volver
+            </button>
+        </div>
     </div>
-
-</body>
-
-</html>
+</x-app-layout>
