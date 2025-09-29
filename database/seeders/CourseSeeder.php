@@ -12,6 +12,10 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Course::create([
+            'name' => 'Bases de Datos Fundamentales',
+            'description' => 'Curso introductorio a bases de datos relacionales y NoSQL',
+            'token' => base64_encode('course_token_' . time()),
+        ]);
     }
 }

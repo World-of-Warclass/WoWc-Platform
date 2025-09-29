@@ -16,7 +16,7 @@ const fetchJSON = (url) =>
 const init = async () => {
     try {
         const characterAmbienceData = await fetchJSON(
-            "http://127.0.0.1:8000/character/ambience/1"
+            "/character/ambience/1"
         );
 
         const [dataAmbience, timeData] = await Promise.all([
@@ -180,7 +180,7 @@ const startRendering = (renderer, scene, camera, controls) => {
 window.addEventListener("load", () => {
     setTimeout(init, 500);
 
-    fetch("http://127.0.0.1:8000/character/appearance/1")
+    fetch("/character/appearance/1")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");

@@ -12,45 +12,43 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        $userId = $user->id;
 
-        $user = Auth::user()->id;
+        // Obtener cursos con relaciones
+        $courses = Course::all();
 
-        $course = Course::all();
+        // Obtener información del teacher si existe
+        $teachers = Teacher::where('id_user', $userId)->get();
 
-        $teacher = Teacher::all()->where('id_user', $user);
-
-        $institution_courses = [];
-
-        $inscriptions = Inscription::where('id_user', $user)->get();
-
-        $teachers_courses = [];
-
-        foreach ($teacher as $teach) {
-            $teachers_course = Teachers_Course::where("id_teacher", $teach->id)->get();
-
-            foreach ($teachers_course as $courses) {
-
-                $institution_courses[] = $courses;
-            }
-
+        // Obtener cursos de la institución de manera más eficiente
+        $institutionCourses = collect();
+        if ($teachers->isNotEmpty()) {
+            $teacherIds = $teachers->pluck('id');
+            $institutionCourses = Teachers_Course::whereIn('id_teacher', $teacherIds)
+                ->with('course')
+                ->get();
         }
 
+        // Obtener inscripciones del usuario
+        $inscriptions = Inscription::where('id_user', $userId)
+            ->with('course')
+            ->get();
 
-        foreach ($inscriptions as $inscription) {
-            $student_courses = Course::where('id', $inscription->id_course)->get();
-
-            foreach ($student_courses as $student_course) {
-                $student_course_teachers = Teachers_Course::where('id_course', $student_course->id)->get();
-
-                foreach ($student_course_teachers as $student_course_teacher) {
-                    $teachers_courses[] = $student_course_teacher;
-                }
-            }
-
+        // Obtener cursos donde el usuario es estudiante
+        $studentCourses = collect();
+        if ($inscriptions->isNotEmpty()) {
+            $courseIds = $inscriptions->pluck('id_course');
+            $studentCourses = Teachers_Course::whereIn('id_course', $courseIds)
+                ->with(['course', 'teacher'])
+                ->get();
         }
 
-
-
-        return view('dashboard', compact('teacher', 'institution_courses', 'inscriptions', 'teachers_courses'));
+        return view('dashboard', [
+            'teacher' => $teachers,
+            'institution_courses' => $institutionCourses,
+            'inscriptions' => $inscriptions,
+            'teachers_courses' => $studentCourses
+        ]);
     }
 }

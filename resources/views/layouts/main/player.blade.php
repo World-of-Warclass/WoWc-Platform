@@ -16,7 +16,7 @@
 
 </head>
 
-<body class="bg-base-100 flex flex-col h-screen w-screen overflow-hidden">
+<body class="bg-gray-900 flex flex-col h-screen w-screen overflow-hidden text-gray-100">
 
     <header class="shadow-md w-full">
         <x-player-navigation name="{{ $name ?? 'Player' }}" :token="$token">

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -25,25 +27,36 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('web')->attempt($credentials)) {
+            $user = Auth::guard('web')->user();
 
-            $user = Auth::guard('web')->user()->id;
-
-            $role = Role::where('model_id', $user)->where('model_type', 'App\Models\User')->first();
-
-            if ($role->role_id === 2) {
-                return redirect()->intended('/dashboard');
-            } else if ($role->role_id === 1) {
+            // Verificar roles usando consulta directa
+            $roleNames = DB::table('model_has_roles')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('model_has_roles.model_type', 'App\\Models\\User')
+                ->pluck('roles.name')
+                ->toArray();
+            
+            // Verificar si es teacher (master)
+            $isTeacher = Teacher::where('id_user', $user->id)->exists();
+            
+            if (in_array('institution', $roleNames)) {
                 return redirect()->intended('/institution');
+            } elseif ($isTeacher) {
+                // Si es teacher, puede acceder como master
+                return redirect()->intended('/dashboard');
+            } elseif (in_array('user', $roleNames)) {
+                // Si es user regular, puede acceder como player
+                return redirect()->intended('/dashboard');
             } else {
                 return back()->withErrors([
-                    'email' => 'The provided credentials do not match our records.',
+                    'email' => 'No tienes permisos para acceder a esta aplicación.',
                 ]);
             }
-
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ]);
     }
 

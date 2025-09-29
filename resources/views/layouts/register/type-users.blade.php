@@ -25,15 +25,15 @@
             <h2 class="text-2xl font-semibold  mb-4 flex justify-center text-yellow-500">Elige tipo de usuario</h2>
             <div class=" flex flex-col gap-5 m-3">
                 <a href="register-users">
-                    <div class="text-neutral-700 bg-white rounded-md px-5 py-3 border-2 border-red-500 hover:text-neutral-700 hover:bg-neutral-200 hover:border-neutral-900">
+                    <div class="text-neutral-100 bg-red-500 rounded-md px-5 py-3 border-2 border-red-500 hover:text-neutral-700 hover:bg-neutral-200 hover:border-neutral-900">
                         <div class=" text-2xl borde-2 border-orange-300 flex justify-start ml-3 gap-10" role="button">
                             <span class="icon-[ph--student-bold]"></span>
                             <p>Usuarios</p>
                         </div>
                     </div>
                 </a>
-                <a href="{{ route('register.inst')}}">
-                    <div class="text-neutral-700 bg-white rounded-md px-5 py-3 border-2 border-red-500 hover:text-neutral-700 hover:bg-neutral-200 hover:border-neutral-900">
+                <a href="{{ route('register.institution')}}">
+                    <div class="text-neutral-100 bg-red-500 rounded-md px-5 py-3 border-2 border-red-500 hover:text-neutral-700 hover:bg-neutral-200 hover:border-neutral-900">
                         <div class=" text-2xl borde-2 border-orange-300 flex justify-start ml-3 gap-10" role="button">
                             <span class="icon-[teenyicons--school-solid]"></span>
                             <p>Institucion</p>

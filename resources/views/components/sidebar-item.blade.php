@@ -32,12 +32,11 @@
         <a href="{{ $href ?? '' }}">
 
     <a href="{{ $href ?? '' }}"
-        class="p-4 gap-2 w-full flex flex-row items-center rounded-md duration-300 transition-all cursor-pointer hover:bg-white hover:bg-opacity-[0.265]">
+        class="p-4 gap-2 w-full flex flex-row items-center rounded-md duration-300 transition-all cursor-pointer text-gray-200 hover:bg-white hover:bg-opacity-20 hover:text-white">
         <div class="text-xl grid place-items-center">
             <span class="{{ $icon ?? '' }}">
-
             </span>
         </div>
-        <span>{{ $name }}</span>
+        <span class="font-medium">{{ $name }}</span>
     </a>
 </li>

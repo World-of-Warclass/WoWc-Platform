@@ -1,0 +1,59 @@
+/* WOWC Light Mode */
+:root {
+    --primary: #dc2626;
+    --primary-content: #ffffff;
+    --secondary: #262626;
+    --secondary-content: #ffffff;
+    --accent: #eab308;
+    --neutral: #262626;
+    --neutral-content: #d4d4d8;
+    
+    --base-100: #ffffff;
+    --base-200: #f5f5f5;
+    --base-content: #171717;
+    
+    --info: #0ea5e9;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+  }
+  
+  /* WOWC Dark Mode */
+  [data-theme="dark"] {
+    --primary: #dc2626;
+    --primary-content: #f5f5f5;
+    --secondary: #e5e5e5;
+    --secondary-content: #171717;
+    --accent: #ca8a04;
+    --neutral: #262626;
+    --neutral-content: #a3a3a3;
+    
+    --base-100: #171717;
+    --base-200: #262626;
+    --base-content: #f5f5f5;
+    
+    --info: #0ea5e9;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+  }
+  
+  /* WOWC Neutral Mode */
+  [data-theme="neutral"] {
+    --primary: #dc2626;
+    --primary-content: #ffffff;
+    --secondary: #404040;
+    --secondary-content: #ffffff;
+    --accent: #eab308;
+    --neutral: #262626;
+    --neutral-content: #a3a3a3;
+    
+    --base-100: #262626;
+    --base-content: #f5f5f5;
+    
+    --info: #0ea5e9;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+  }
+  
